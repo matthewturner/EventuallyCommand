@@ -1,13 +1,29 @@
 #include <Eventually.h>
-#include "CommandListener.h"
+#include "EvtCommandListener.h"
+
+EvtManager mgr;
+EvtCommandListener commandListener(&Serial);
 
 void setup()
 {
   Serial.begin(115200);
 
-  Serial.println(F("Setup complete. Continuing..."));
+  commandListener.when("update", (EvtAction)update);
+  commandListener.when("set", (EvtAction)set);
+
+  mgr.addListener(&commandListener);
+
+  Serial.println("Setup complete. Continuing...");
 }
 
-void loop()
+bool update()
 {
+  Serial.println("Updating...");
 }
+
+bool set()
+{
+  Serial.println("Setting...");
+}
+
+USE_EVENTUALLY_LOOP(mgr)

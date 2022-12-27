@@ -1,10 +1,13 @@
 #pragma once
 
-#include "IStreamReader.h"
+#include <EvtListener.h>
+#include <Arduino.h>
 
 #include <stdlib.h>
 #include "stdint.h"
 #include "string.h"
+
+#define MAX_COMMANDS 10
 
 enum commands
 {
@@ -23,11 +26,22 @@ struct command
 };
 typedef struct command Command;
 
-class EvtCommandListener
+struct commandAction
+{
+    EvtAction action;
+    char *command;
+} typedef CommandAction;
+
+class EvtCommandListener : public EvtListener
 {
 public:
-    EvtCommandListener(IStreamReader *streamReader);
+    EvtCommandListener(Stream *stream);
     bool tryReadCommand(Command *command);
+    void when(char *command, EvtAction action);
+
+    void setupListener();
+    bool isEventTriggered();
+    bool performTriggerAction(EvtContext *ctx);
 
 private:
     bool tryReadInstruction();
@@ -36,5 +50,6 @@ private:
     char _dataBuffer[40];
     short _commandIndex = -1;
     long _dataIndex = -1;
-    IStreamReader *_streamReader;
+    Stream *_stream;
+    CommandAction _commands[MAX_COMMANDS];
 };

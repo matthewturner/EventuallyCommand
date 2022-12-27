@@ -1,8 +1,36 @@
 #include "EvtCommandListener.h"
 
-EvtCommandListener::EvtCommandListener(IStreamReader *streamReader)
+EvtCommandListener::EvtCommandListener(Stream *stream)
 {
-    _streamReader = streamReader;
+    _stream = stream;
+}
+
+void EvtCommandListener::when(char *command, EvtAction action)
+{
+    CommandAction commandAction;
+    commandAction.command = command;
+    commandAction.action = action;
+    _commands[0] = commandAction;
+}
+
+bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
+{
+    if (tryReadInstruction())
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool EvtCommandListener::isEventTriggered()
+{
+    if (!EvtListener::isEventTriggered())
+    {
+        return false;
+    }
+
+    return tryReadInstruction();
 }
 
 bool EvtCommandListener::tryReadCommand(Command *command)
@@ -21,9 +49,9 @@ bool EvtCommandListener::tryReadInstruction()
 {
     _commandIndex = -1;
     _dataIndex = -1;
-    while (_streamReader->available())
+    while (_stream->available())
     {
-        int ch = _streamReader->read();
+        int ch = _stream->read();
         switch (ch)
         {
         case '>':
@@ -90,4 +118,8 @@ bool EvtCommandListener::convertToCommand(Command *command)
         return true;
     }
     return false;
+}
+
+void EvtCommandListener::setupListener()
+{
 }
