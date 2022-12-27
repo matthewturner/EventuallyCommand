@@ -23,10 +23,10 @@ struct command
 };
 typedef struct command Command;
 
-class CommandListener
+class EvtCommandListener
 {
 public:
-    CommandListener(IStreamReader *streamReader);
+    EvtCommandListener(IStreamReader *streamReader);
     bool tryReadCommand(Command *command);
 
 private:

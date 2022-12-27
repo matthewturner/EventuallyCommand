@@ -1,11 +1,11 @@
-#include "CommandListener.h"
+#include "EvtCommandListener.h"
 
-CommandListener::CommandListener(IStreamReader *streamReader)
+EvtCommandListener::EvtCommandListener(IStreamReader *streamReader)
 {
     _streamReader = streamReader;
 }
 
-bool CommandListener::tryReadCommand(Command *command)
+bool EvtCommandListener::tryReadCommand(Command *command)
 {
     command->Value = CNONE;
     command->Data = 0;
@@ -17,7 +17,7 @@ bool CommandListener::tryReadCommand(Command *command)
     return false;
 }
 
-bool CommandListener::tryReadInstruction()
+bool EvtCommandListener::tryReadInstruction()
 {
     _commandIndex = -1;
     _dataIndex = -1;
@@ -58,7 +58,7 @@ bool CommandListener::tryReadInstruction()
     return false;
 }
 
-bool CommandListener::convertToCommand(Command *command)
+bool EvtCommandListener::convertToCommand(Command *command)
 {
     command->Value = CNONE;
     command->Data = 0;

@@ -1,11 +1,11 @@
 #include <unity.h>
 
 #include "MockStreamReader.h"
-#include "CommandListener.h"
+#include "EvtCommandListener.h"
 
 MockStreamReader streamReader;
 Command command;
-CommandListener commandListener(&streamReader);
+EvtCommandListener commandListener(&streamReader);
 
 void setUp(void)
 {
