@@ -5,6 +5,12 @@ EvtCommandListener::EvtCommandListener(Stream *stream)
     _stream = stream;
 }
 
+// EvtCommandListener::EvtCommandListener(Stream *stream, unsigned long readDelayMs)
+// {
+//     _stream = stream;
+//     _readDelayMs = readDelayMs;
+// }
+
 void EvtCommandListener::when(const char *command, EvtCommandAction action)
 {
     CommandAction commandAction;
@@ -49,6 +55,7 @@ bool EvtCommandListener::tryReadCommand()
     _dataIndex = -1;
     while (_stream->available())
     {
+        delay(_readDelayMs);
         int ch = _stream->read();
         switch (ch)
         {
