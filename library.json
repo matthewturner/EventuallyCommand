@@ -1,0 +1,19 @@
+{
+    "name": "Eventually - Command Listener",
+    "keywords": "async, event-based, serial",
+    "description": "Trigger Eventually event from a serial command",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/matthewturner/Eventually-CommandListener.git"
+    },
+    "authors": [
+        {
+            "name": "Matt Turner",
+            "url": "https://github.com/matthewturner",
+            "maintainer": true
+        }
+    ],
+    "version": "0.1.0",
+    "frameworks": "*",
+    "platforms": "*"
+}
