@@ -5,19 +5,25 @@ EvtCommandListener::EvtCommandListener(Stream *stream)
     _stream = stream;
 }
 
-void EvtCommandListener::when(char *command, EvtAction action)
+void EvtCommandListener::when(const char *command, EvtAction action)
 {
     CommandAction commandAction;
-    commandAction.command = command;
-    commandAction.action = action;
-    _commands[0] = commandAction;
+    commandAction.Command = command;
+    commandAction.Action = action;
+    _commands[_commandActionIndex] = commandAction;
+    _commandActionIndex++;
 }
 
 bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
 {
-    if (tryReadInstruction())
+    for (short i = 0; i < _commandActionIndex; i++)
     {
-        return true;
+        CommandAction action = _commands[i];
+        if (strcmp(_commandBuffer, action.Command) == 0)
+        {
+            return action.Action(this, ctx);
+            // command->Data = atol(_dataBuffer);
+        }
     }
 
     return false;
@@ -30,22 +36,10 @@ bool EvtCommandListener::isEventTriggered()
         return false;
     }
 
-    return tryReadInstruction();
+    return tryReadCommand();
 }
 
-bool EvtCommandListener::tryReadCommand(Command *command)
-{
-    command->Value = CNONE;
-    command->Data = 0;
-
-    if (tryReadInstruction())
-    {
-        return convertToCommand(command);
-    }
-    return false;
-}
-
-bool EvtCommandListener::tryReadInstruction()
+bool EvtCommandListener::tryReadCommand()
 {
     _commandIndex = -1;
     _dataIndex = -1;
@@ -82,40 +76,6 @@ bool EvtCommandListener::tryReadInstruction()
             }
             break;
         }
-    }
-    return false;
-}
-
-bool EvtCommandListener::convertToCommand(Command *command)
-{
-    command->Value = CNONE;
-    command->Data = 0;
-
-    if (_commandIndex == 0)
-    {
-        return false;
-    }
-    if (strcmp(_commandBuffer, "set") == 0)
-    {
-        command->Value = SET;
-        command->Data = atol(_dataBuffer);
-        return true;
-    }
-    if (strcmp(_commandBuffer, "set-schedule") == 0)
-    {
-        command->Value = SET_SCHEDULE;
-        command->Data = atol(_dataBuffer);
-        return true;
-    }
-    if (strcmp(_commandBuffer, "show") == 0)
-    {
-        command->Value = SHOW;
-        return true;
-    }
-    if (strcmp(_commandBuffer, "status") == 0)
-    {
-        command->Value = STATUS;
-        return true;
     }
     return false;
 }
