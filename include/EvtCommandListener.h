@@ -20,6 +20,7 @@ class EvtCommandListener : public EvtListener
 {
 public:
     EvtCommandListener(Stream *stream);
+    EvtCommandListener(Stream *stream, short readDelayMs);
     bool tryReadCommand();
     void when(const char *command, EvtCommandAction action);
 
@@ -34,5 +35,6 @@ private:
     long _dataIndex = -1;
     Stream *_stream;
     short _commandActionIndex = 0;
+    unsigned long _readDelayMs = 5;
     CommandAction _commands[MAX_COMMANDS];
 };
