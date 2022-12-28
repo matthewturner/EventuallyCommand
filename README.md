@@ -4,11 +4,13 @@
 
 Built on the [Eventually](https://github.com/johnnyb/Eventually) library, this provides a listener which reads commands from any Serial device.
 
+This works alongside any other listener you might already have in your sketch.
+
 Commands can be sent from a laptop through the serial monitor or Bluetooth-connected phone.
 
 ## Command Syntax
 
-Commands must start with '>' and end with '!', eg:
+Commands must start with **'>'** and end with **'!'**, eg:
 
 ```
 >set!
@@ -20,6 +22,27 @@ Commands can optionally include an integer data element, separated by a colon:
 
 ```
 >set:123!
+```
+
+## Usage
+
+```
+EvtManager mgr;
+EvtCommandListener commandListener(&Serial);
+
+void setup()
+{
+    Serial.begin(115200);
+
+    // register other listeners as normal
+    mgr.addListener(new EvtPinListener(...));
+
+    // register the command and the action to trigger
+    commandListener.when("update", (EvtCommandAction)update);
+    commandListener.when("set", (EvtCommandAction)set);
+
+    mgr.addListener(&commandListener);
+}
 ```
 
 ## Installing Platform IO
