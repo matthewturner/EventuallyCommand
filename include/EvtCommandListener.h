@@ -20,6 +20,7 @@ class EvtCommandListener : public EvtListener
 {
 public:
     EvtCommandListener(Stream *stream);
+    EvtCommandListener(Stream *stream, short readDelayMs);
     bool tryReadCommand();
     void when(const char *command, EvtCommandAction action);
 

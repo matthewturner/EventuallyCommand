@@ -15,6 +15,7 @@ long _data = -1;
 void setUp(void)
 {
     ArduinoFakeReset();
+    When(Method(ArduinoFake(), delay)).AlwaysReturn();
     _called = false;
 }
 
@@ -40,6 +41,30 @@ void test_not_triggered_by_invalid_command(void)
 
     bool actual = target->isEventTriggered();
     TEST_ASSERT_FALSE(actual);
+}
+
+void test_waits_default_time_before_read(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('b', 'l', 'a', 'h');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+
+    target->isEventTriggered();
+
+    Verify(Method(ArduinoFake(), delay).Using(5)).Exactly(4_Times);
+}
+
+void test_waits_specified_time_before_read(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('b', 'l', 'a', 'h');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream, 99);
+
+    target->isEventTriggered();
+
+    Verify(Method(ArduinoFake(), delay).Using(99)).Exactly(4_Times);
 }
 
 void test_not_triggered_by_non_terminated_command(void)
@@ -242,6 +267,8 @@ int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_not_triggered_by_invalid_command);
+    RUN_TEST(test_waits_default_time_before_read);
+    RUN_TEST(test_waits_specified_time_before_read);
     RUN_TEST(test_not_triggered_by_non_terminated_command);
     RUN_TEST(test_not_triggered_by_non_terminated_command_does_not_call_action);
     RUN_TEST(test_triggered_by_valid_command);

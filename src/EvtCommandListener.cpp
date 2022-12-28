@@ -5,11 +5,11 @@ EvtCommandListener::EvtCommandListener(Stream *stream)
     _stream = stream;
 }
 
-// EvtCommandListener::EvtCommandListener(Stream *stream, unsigned long readDelayMs)
-// {
-//     _stream = stream;
-//     _readDelayMs = readDelayMs;
-// }
+EvtCommandListener::EvtCommandListener(Stream *stream, short readDelayMs)
+{
+    _stream = stream;
+    _readDelayMs = readDelayMs;
+}
 
 void EvtCommandListener::when(const char *command, EvtCommandAction action)
 {
