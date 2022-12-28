@@ -8,17 +8,19 @@ void setup()
 {
   Serial.begin(115200);
 
-  commandListener.when("update", (EvtAction)update);
-  commandListener.when("set", (EvtAction)set);
+  commandListener.when("update", (EvtCommandAction)update);
+  commandListener.when("set", (EvtCommandAction)set);
 
   mgr.addListener(&commandListener);
 
   Serial.println("Setup complete. Continuing...");
 }
 
-bool update()
+bool update(EvtListener *, EvtContext *, long data)
 {
-  Serial.println("Updating...");
+  Serial.print("Updating with ");
+  Serial.print(data);
+  Serial.println("...");
 }
 
 bool set()
