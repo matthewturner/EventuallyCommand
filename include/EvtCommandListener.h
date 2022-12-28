@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EvtListener.h>
+#include <EvtCommandAction.h>
 #include <Arduino.h>
 
 #include <stdlib.h>
@@ -11,7 +12,7 @@
 
 struct commandAction
 {
-    EvtAction Action;
+    EvtCommandAction Action;
     const char *Command;
 } typedef CommandAction;
 
@@ -20,15 +21,11 @@ class EvtCommandListener : public EvtListener
 public:
     EvtCommandListener(Stream *stream);
     bool tryReadCommand();
-    void when(const char *command, EvtAction action);
+    void when(const char *command, EvtCommandAction action);
 
     void setupListener();
     bool isEventTriggered();
     bool performTriggerAction(EvtContext *ctx);
-
-    /// @brief The data from the last command
-    /// @return The value
-    long data();
 
 private:
     char _commandBuffer[20];

@@ -5,7 +5,7 @@ EvtCommandListener::EvtCommandListener(Stream *stream)
     _stream = stream;
 }
 
-void EvtCommandListener::when(const char *command, EvtAction action)
+void EvtCommandListener::when(const char *command, EvtCommandAction action)
 {
     CommandAction commandAction;
     commandAction.Command = command;
@@ -21,8 +21,12 @@ bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
         CommandAction action = _commands[i];
         if (strcmp(_commandBuffer, action.Command) == 0)
         {
-            return action.Action(this, ctx);
-            // command->Data = atol(_dataBuffer);
+            long data = -1;
+            if (_dataIndex > 1)
+            {
+                data = atol(_dataBuffer);
+            }
+            return action.Action(this, ctx, data);
         }
     }
 

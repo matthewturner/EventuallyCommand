@@ -10,6 +10,7 @@ Stream *stream;
 EvtContext ctx;
 EvtCommandListener *target;
 bool _called = false;
+long _data = -1;
 
 void setUp(void)
 {
@@ -23,9 +24,10 @@ void tearDown(void)
     delete target;
 }
 
-bool mockMethod()
+bool mockMethod(EvtListener *listener, EvtContext *ctx, long data)
 {
     _called = true;
+    _data = data;
     return true;
 }
 
@@ -82,7 +84,7 @@ void test_triggered_by_valid_command_calls_action(void)
     stream = ArduinoFakeMock(Stream);
     target = new EvtCommandListener(stream);
 
-    target->when("set", (EvtAction)mockMethod);
+    target->when("set", (EvtCommandAction)mockMethod);
 
     target->isEventTriggered();
     bool actual = target->performTriggerAction(&ctx);
@@ -130,12 +132,13 @@ void test_triggered_by_command_with_invalid_data_calls_action(void)
     stream = ArduinoFakeMock(Stream);
     target = new EvtCommandListener(stream);
 
-    target->when("set", (EvtAction)mockMethod);
+    target->when("set", (EvtCommandAction)mockMethod);
 
     target->isEventTriggered();
     bool actual = target->performTriggerAction(&ctx);
     TEST_ASSERT_TRUE(actual);
     TEST_ASSERT_TRUE(_called);
+    TEST_ASSERT_EQUAL(-1, _data);
 }
 
 void test_triggered_by_command_with_positive_data(void)
@@ -147,6 +150,22 @@ void test_triggered_by_command_with_positive_data(void)
 
     bool actual = target->isEventTriggered();
     TEST_ASSERT_TRUE(actual);
+}
+
+void test_triggered_by_command_with_positive_data_calls_action(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', ':', '3', '5', '!');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+
+    target->when("set", (EvtCommandAction)mockMethod);
+
+    target->isEventTriggered();
+    bool actual = target->performTriggerAction(&ctx);
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_TRUE(_called);
+    TEST_ASSERT_EQUAL(35, _data);
 }
 
 void test_triggered_by_command_with_negative_data(void)
@@ -184,6 +203,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_triggered_by_command_with_invalid_data);
     RUN_TEST(test_triggered_by_command_with_invalid_data_calls_action);
     RUN_TEST(test_triggered_by_command_with_positive_data);
+    RUN_TEST(test_triggered_by_command_with_positive_data_calls_action);
     RUN_TEST(test_triggered_by_command_with_negative_data);
     RUN_TEST(test_triggered_by_command_with_large_data);
     UNITY_END();
