@@ -41,10 +41,12 @@ bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
 
 bool EvtCommandListener::isEventTriggered()
 {
+#ifdef EVT_SUPPORTS_DISABLE
     if (!EvtListener::isEventTriggered())
     {
         return false;
     }
+#endif
 
     return tryReadCommand();
 }
