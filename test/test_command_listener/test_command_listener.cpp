@@ -1,8 +1,8 @@
 #include <ArduinoFake.h>
+#include <unity.h>
 
 #include "EvtCommandListener.h"
 #include "EvtContext.h"
-#include <unity.h>
 
 using namespace fakeit;
 
@@ -115,6 +115,16 @@ void test_triggered_by_valid_command_calls_action(void)
     bool actual = target->performTriggerAction(&ctx);
     TEST_ASSERT_TRUE(actual);
     TEST_ASSERT_TRUE(_called);
+}
+
+void test_does_not_trigger_when_disabled(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', '!');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+    target->disable();
+    TEST_ASSERT_FALSE(target->isEventTriggered());
 }
 
 void test_triggered_by_embedded_command(void)
@@ -273,6 +283,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_not_triggered_by_non_terminated_command_does_not_call_action);
     RUN_TEST(test_triggered_by_valid_command);
     RUN_TEST(test_triggered_by_valid_command_calls_action);
+    RUN_TEST(test_does_not_trigger_when_disabled);
     RUN_TEST(test_triggered_by_embedded_command);
     RUN_TEST(test_triggered_by_command_with_missing_data);
     RUN_TEST(test_triggered_by_command_with_invalid_data);
