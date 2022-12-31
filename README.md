@@ -1,6 +1,6 @@
-[![PlatformIO CI](https://github.com/matthewturner/Eventually-CommandListener/actions/workflows/platformio.yml/badge.svg)](https://github.com/matthewturner/Eventually-CommandListener/actions/workflows/platformio.yml)
+[![PlatformIO CI](https://github.com/matthewturner/EventuallyCommand/actions/workflows/platformio.yml/badge.svg)](https://github.com/matthewturner/EventuallyCommand/actions/workflows/platformio.yml)
 
-# Eventually - Command Listener
+# Eventually - Command
 
 Built on the [Eventually](https://github.com/johnnyb/Eventually) library, this provides a listener which reads commands from any Serial device.
 
@@ -23,6 +23,8 @@ Commands can optionally include an integer data element, separated by a colon:
 ```
 >set:123!
 ```
+
+The data element will be passed into your registered EvtCommandAction callback.
 
 ## Usage
 
