@@ -26,6 +26,9 @@ USE_EVENTUALLY_LOOP(mgr)
 bool set()
 {
   Serial.println("Setting...");
+
+  // continue with other listeners in chain
+  return false;
 }
 
 // unless you are interested in the data element
@@ -34,4 +37,7 @@ bool update(EvtListener *, EvtContext *, long data)
   Serial.print("Updating with ");
   Serial.print(data);
   Serial.println("...");
+
+  // continue with other listeners in chain
+  return false;
 }
