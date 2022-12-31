@@ -1,6 +1,7 @@
-#pragma once
+#ifndef EVT_COMMAND_LISTENER_H
+#define EVT_COMMAND_LISTENER_H
 
-#include <EvtListener.h>
+#include <Eventually.h>
 #include <EvtCommandAction.h>
 #include <Arduino.h>
 
@@ -38,3 +39,5 @@ private:
     unsigned long _readDelayMs = 5;
     CommandAction _commands[MAX_COMMANDS];
 };
+
+#endif
