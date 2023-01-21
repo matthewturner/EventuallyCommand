@@ -47,6 +47,15 @@ void setup()
 }
 ```
 
+## Increasing the maximum number of commands
+
+At the top of your main.h (before the other headers), define EVENTUALLY_MAX_COMMANDS:
+
+```
+#define EVENTUALLY_MAX_COMMANDS
+#include <EventuallyCommand.h>
+```
+
 ## Installing Platform IO
 
 Install command line tools by following the installation instructions for [Windows](https://docs.platformio.org/en/latest/core/installation.html#windows)
