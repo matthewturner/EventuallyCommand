@@ -9,7 +9,9 @@
 #include "stdint.h"
 #include "string.h"
 
-#define MAX_COMMANDS 10
+#ifndef EVENTUALLY_MAX_COMMANDS
+#define EVENTUALLY_MAX_COMMANDS 10
+#endif
 
 struct commandAction
 {
@@ -37,7 +39,7 @@ private:
     Stream *_stream;
     short _commandActionIndex = 0;
     unsigned long _readDelayMs = 5;
-    CommandAction _commands[MAX_COMMANDS];
+    CommandAction _commands[EVENTUALLY_MAX_COMMANDS];
 };
 
 #endif
