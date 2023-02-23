@@ -246,6 +246,48 @@ void test_triggered_by_command_with_negative_data_calls_action(void)
     TEST_ASSERT_EQUAL(-35, _data);
 }
 
+void test_triggered_by_command_with_max_data(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', ':', '1', '6', '4', '1', '0', '9', '2', '!');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+
+    bool actual = target->isEventTriggered();
+    TEST_ASSERT_TRUE(actual);
+}
+
+void test_triggered_by_command_with_max_data_calls_action(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', ':', '1', '6', '4', '1', '0', '9', '2', '!');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+
+    target->when("set", (EvtCommandAction)mockMethod);
+
+    target->isEventTriggered();
+    bool actual = target->performTriggerAction(&ctx);
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_TRUE(_called);
+    TEST_ASSERT_EQUAL(1641092, _data);
+}
+
+void test_triggered_by_large_command_calls_truncated_command(void)
+{
+    When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0);
+    When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', 't', 'h', 'e', 'v', 'a', 'l', 'u', 'e', ':', '1', '6', '4', '1', '0', '9', '2', '4', '9', '4', '!');
+    stream = ArduinoFakeMock(Stream);
+    target = new EvtCommandListener(stream);
+
+    target->when("settheval", (EvtCommandAction)mockMethod);
+
+    target->isEventTriggered();
+    bool actual = target->performTriggerAction(&ctx);
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_TRUE(_called);
+}
+
 void test_triggered_by_command_with_large_data(void)
 {
     When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0);
@@ -257,7 +299,7 @@ void test_triggered_by_command_with_large_data(void)
     TEST_ASSERT_TRUE(actual);
 }
 
-void test_triggered_by_command_with_large_data_calls_action(void)
+void test_triggered_by_command_with_large_data_calls_action_with_truncated_data(void)
 {
     When(Method(ArduinoFake(Stream), available)).Return(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0);
     When(Method(ArduinoFake(Stream), read)).Return('>', 's', 'e', 't', ':', '1', '6', '4', '1', '0', '9', '2', '4', '9', '4', '!');
@@ -270,7 +312,7 @@ void test_triggered_by_command_with_large_data_calls_action(void)
     bool actual = target->performTriggerAction(&ctx);
     TEST_ASSERT_TRUE(actual);
     TEST_ASSERT_TRUE(_called);
-    TEST_ASSERT_EQUAL(1641092494, _data);
+    TEST_ASSERT_EQUAL(1641092, _data);
 }
 
 int main(int argc, char **argv)
@@ -293,8 +335,11 @@ int main(int argc, char **argv)
     RUN_TEST(test_triggered_by_command_with_single_digit_data_calls_action);
     RUN_TEST(test_triggered_by_command_with_negative_data);
     RUN_TEST(test_triggered_by_command_with_negative_data_calls_action);
+    RUN_TEST(test_triggered_by_command_with_max_data);
+    RUN_TEST(test_triggered_by_command_with_max_data_calls_action);
+    RUN_TEST(test_triggered_by_large_command_calls_truncated_command);
     RUN_TEST(test_triggered_by_command_with_large_data);
-    RUN_TEST(test_triggered_by_command_with_large_data_calls_action);
+    RUN_TEST(test_triggered_by_command_with_large_data_calls_action_with_truncated_data);
     UNITY_END();
 
     return 0;

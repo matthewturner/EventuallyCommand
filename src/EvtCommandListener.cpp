@@ -1,10 +1,5 @@
 #include "EvtCommandListener.h"
 
-EvtCommandListener::EvtCommandListener(Stream *stream)
-{
-    _stream = stream;
-}
-
 EvtCommandListener::EvtCommandListener(Stream *stream, short readDelayMs)
 {
     _stream = stream;
@@ -79,18 +74,44 @@ bool EvtCommandListener::tryReadCommand()
         default:
             if (_dataIndex == -1)
             {
-                _commandBuffer[_commandIndex] = ch;
-                _commandIndex++;
+                appendToCommandIfPossible(ch);
             }
             else
             {
-                _dataBuffer[_dataIndex] = ch;
-                _dataIndex++;
+                appendToDataIfPossible(ch);
             }
             break;
         }
     }
     return false;
+}
+
+void EvtCommandListener::appendToCommandIfPossible(char ch)
+{
+    if (_commandIndex >= EVENTUALLY_COMMAND_BUFFER_LENGTH - 1)
+    {
+        _commandBuffer[EVENTUALLY_COMMAND_BUFFER_LENGTH - 1] = '\0';
+        _commandIndex++;
+    }
+    else
+    {
+        _commandBuffer[_commandIndex] = ch;
+        _commandIndex++;
+    }
+}
+
+void EvtCommandListener::appendToDataIfPossible(char ch)
+{
+    if (_dataIndex >= EVENTUALLY_DATA_BUFFER_LENGTH - 1)
+    {
+        _dataBuffer[EVENTUALLY_DATA_BUFFER_LENGTH - 1] = '\0';
+        _dataIndex++;
+    }
+    else
+    {
+        _dataBuffer[_dataIndex] = ch;
+        _dataIndex++;
+    }
 }
 
 void EvtCommandListener::setupListener()

@@ -12,6 +12,12 @@
 #ifndef EVENTUALLY_MAX_COMMANDS
 #define EVENTUALLY_MAX_COMMANDS 10
 #endif
+#ifndef EVENTUALLY_COMMAND_BUFFER_LENGTH
+#define EVENTUALLY_COMMAND_BUFFER_LENGTH 10
+#endif
+#ifndef EVENTUALLY_DATA_BUFFER_LENGTH
+#define EVENTUALLY_DATA_BUFFER_LENGTH 8
+#endif
 
 struct commandAction
 {
@@ -22,8 +28,7 @@ struct commandAction
 class EvtCommandListener : public EvtListener
 {
 public:
-    EvtCommandListener(Stream *stream);
-    EvtCommandListener(Stream *stream, short readDelayMs);
+    EvtCommandListener(Stream *stream, short readDelayMs = 5);
     bool tryReadCommand();
     void when(const char *command, EvtCommandAction action);
 
@@ -32,14 +37,17 @@ public:
     bool performTriggerAction(EvtContext *ctx);
 
 private:
-    char _commandBuffer[20];
-    char _dataBuffer[40];
+    char _commandBuffer[EVENTUALLY_COMMAND_BUFFER_LENGTH];
+    char _dataBuffer[EVENTUALLY_DATA_BUFFER_LENGTH];
     short _commandIndex = -1;
     long _dataIndex = -1;
     Stream *_stream;
     short _commandActionIndex = 0;
-    unsigned long _readDelayMs = 5;
+    unsigned long _readDelayMs;
     CommandAction _commands[EVENTUALLY_MAX_COMMANDS];
+
+    void appendToCommandIfPossible(char ch);
+    void appendToDataIfPossible(char ch);
 };
 
 #endif
