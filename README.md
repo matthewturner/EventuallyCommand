@@ -52,7 +52,17 @@ void setup()
 At the top of your main.h (before the other headers), define EVENTUALLY_MAX_COMMANDS:
 
 ```
-#define EVENTUALLY_MAX_COMMANDS
+#define EVENTUALLY_MAX_COMMANDS 20
+#include <EventuallyCommand.h>
+```
+
+## Increasing the length of the command/data buffers
+
+At the top of your main.h (before the other headers), define the following:
+
+```
+#define EVENTUALLY_COMMAND_BUFFER_LENGTH 20
+#define EVENTUALLY_DATA_BUFFER_LENGTH 20
 #include <EventuallyCommand.h>
 ```
 
