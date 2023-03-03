@@ -32,9 +32,9 @@ public:
     bool tryReadCommand();
     void when(const char *command, EvtCommandAction action);
 
-    void setupListener();
+    void reset();
     bool isEventTriggered();
-    bool performTriggerAction(EvtContext *ctx);
+    bool performTriggerAction(IEvtContext *ctx);
 
 private:
     char _commandBuffer[EVENTUALLY_COMMAND_BUFFER_LENGTH];

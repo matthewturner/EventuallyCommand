@@ -15,7 +15,7 @@ void EvtCommandListener::when(const char *command, EvtCommandAction action)
     _commandActionIndex++;
 }
 
-bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
+bool EvtCommandListener::performTriggerAction(IEvtContext *ctx)
 {
     for (short i = 0; i < _commandActionIndex; i++)
     {
@@ -36,12 +36,10 @@ bool EvtCommandListener::performTriggerAction(EvtContext *ctx)
 
 bool EvtCommandListener::isEventTriggered()
 {
-#ifdef EVT_SUPPORTS_DISABLE
     if (!EvtListener::isEventTriggered())
     {
         return false;
     }
-#endif
 
     return tryReadCommand();
 }
@@ -114,6 +112,6 @@ void EvtCommandListener::appendToDataIfPossible(char ch)
     }
 }
 
-void EvtCommandListener::setupListener()
+void EvtCommandListener::reset()
 {
 }

@@ -2,7 +2,7 @@
 
 # Eventually - Command
 
-Built on the [Eventually](https://github.com/johnnyb/Eventually) library, this provides a listener which reads commands from any Serial device.
+Built on the [Eventually](https://github.com/matthewturner/Eventually) library, this provides a listener which reads commands from any Serial device.
 
 This works alongside any other listener you might already have in your sketch.
 

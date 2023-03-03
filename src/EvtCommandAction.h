@@ -1,9 +1,9 @@
 #ifndef EVT_COMMAND_ACTION_H
 #define EVT_COMMAND_ACTION_H
 
-class EvtContext;
-class EvtListener;
+class IEvtContext;
+class IEvtListener;
 
-typedef bool (*EvtCommandAction)(EvtListener *, EvtContext *, long data);
+typedef bool (*EvtCommandAction)(IEvtListener *, IEvtContext *, long data);
 
 #endif
